@@ -13,6 +13,7 @@ import re
 from typing import Optional
 
 from .exception import Exception
+from .config import Config
 from .api.request_handler import RequestHandler
 from .api.rbl import RBL
 from .api.contact import Contact
@@ -23,12 +24,18 @@ class Client:
 
     VERSION = "2.0.0"
 
-    def __init__(self, account_sid: str, auth_token: str) -> None:
+    def __init__(
+        self,
+        account_sid: str,
+        auth_token: str,
+        config: Optional[Config] = None
+    ) -> None:
         """Initialize the Generator Labs client.
 
         Args:
             account_sid: Your Generator Labs account SID
             auth_token: Your Generator Labs auth token
+            config: Optional configuration object
 
         Raises:
             Exception: If credentials are invalid
@@ -44,11 +51,17 @@ class Client:
         self.account_sid = account_sid
         self.auth_token = auth_token
 
-        # API configuration
-        self.api_url = "https://api.generatorlabs.com/4.0/"
+        # Configuration
+        self.config = config or Config()
+        self.api_url = self.config.base_url
 
         # Initialize request handler
-        self._handler = RequestHandler(account_sid, auth_token, self.api_url)
+        self._handler = RequestHandler(
+            account_sid,
+            auth_token,
+            self.api_url,
+            self.config
+        )
 
         # Lazy-loaded API namespaces
         self._rbl: Optional[RBL] = None

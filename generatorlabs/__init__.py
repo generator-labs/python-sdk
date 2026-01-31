@@ -10,7 +10,8 @@
 """Generator Labs Python SDK for API v4.0."""
 
 from .client import Client
+from .config import Config
 from .exception import Exception
 
 __version__ = "2.0.0"
-__all__ = ["Client", "Exception"]
+__all__ = ["Client", "Config", "Exception"]

@@ -14,6 +14,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from ..exception import Exception
+from ..config import Config
 
 if TYPE_CHECKING:
     from ..client import Client
@@ -22,18 +23,26 @@ if TYPE_CHECKING:
 class RequestHandler:
     """Handles HTTP requests to the Generator Labs API."""
 
-    def __init__(self, account_sid: str, auth_token: str, api_url: str) -> None:
+    def __init__(
+        self,
+        account_sid: str,
+        auth_token: str,
+        api_url: str,
+        config: Optional[Config] = None
+    ) -> None:
         """Initialize the request handler.
 
         Args:
             account_sid: The account SID for authentication
             auth_token: The auth token for authentication
             api_url: The base API URL
+            config: Configuration object
         """
         self.account_sid = account_sid
         self.auth_token = auth_token
         self.api_url = api_url
         self.auth = (account_sid, auth_token)
+        self.config = config or Config()
 
         # Initialize session with retry logic and timeouts
         self.session = self._create_session()
@@ -50,11 +59,9 @@ class RequestHandler:
         session = requests.Session()
 
         # Configure retry strategy with exponential backoff
-        # Retries: 0, 1, 2 (3 total attempts)
-        # Backoff delays: 1s, 2s, 4s
         retry_strategy = Retry(
-            total=3,  # Maximum number of retries
-            backoff_factor=1,  # Exponential backoff: 1 * (2 ** retry_number)
+            total=self.config.max_retries,  # Maximum number of retries
+            backoff_factor=self.config.retry_backoff,  # Exponential backoff multiplier
             status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to retry
             allowed_methods=["GET", "POST", "PUT", "DELETE"],  # Methods to retry
             raise_on_status=False,  # Don't raise on retry exhaustion
@@ -98,7 +105,7 @@ class RequestHandler:
         url = f"{self.api_url}{path}.json"
 
         # Timeouts: (connect_timeout, read_timeout)
-        timeout = (5.0, 30.0)
+        timeout = (self.config.connect_timeout, self.config.timeout)
 
         try:
             if method == "GET":

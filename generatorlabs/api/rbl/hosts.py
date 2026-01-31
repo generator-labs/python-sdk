@@ -11,9 +11,10 @@
 
 from typing import Any, Dict, Optional, Union
 from ..request_handler import RequestHandler
+from ..pagination import PaginationMixin
 
 
-class Hosts:
+class Hosts(PaginationMixin):
     """Manage RBL monitored hosts."""
 
     def __init__(self, handler: RequestHandler) -> None:
@@ -99,3 +100,7 @@ class Hosts:
             API response
         """
         return self.handler.post(f"rbl/hosts/{host_id}/resume")
+
+    def _get_resource_name(self) -> str:
+        """Get the resource name for pagination."""
+        return 'hosts'

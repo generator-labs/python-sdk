@@ -1,6 +1,8 @@
 # Generator Labs Python SDK
 
 [![Tests](https://github.com/generator-labs/python-sdk/actions/workflows/tests.yml/badge.svg)](https://github.com/generator-labs/python-sdk/actions/workflows/tests.yml)
+[![CodeQL](https://github.com/generator-labs/python-sdk/actions/workflows/codeql.yml/badge.svg)](https://github.com/generator-labs/python-sdk/actions/workflows/codeql.yml)
+[![codecov](https://codecov.io/gh/generator-labs/python-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/generator-labs/python-sdk)
 [![MyPy](https://img.shields.io/badge/mypy-strict-blue.svg)](http://mypy-lang.org/)
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -10,12 +12,16 @@ The official Python SDK for the [Generator Labs](https://generatorlabs.com) API 
 ## Features
 
 - Full support for Generator Labs API v4.0
+- Automatic retry logic with exponential backoff (configurable)
+- Configurable timeouts and retry behavior
+- Automatic pagination support for large result sets
 - RESTful endpoint design with proper HTTP verbs (GET, POST, PUT, DELETE)
 - RBL and DNSBL monitoring
 - Contact and contact group management
 - Manual RBL checks
 - Monitoring profiles and sources
-- Type-safe with Python 3.8+ type hints
+- Type-safe with Python 3.8+ type hints and mypy strict mode
+- requests.Session with connection pooling
 - Async support (coming soon)
 
 ## Prerequisites
@@ -41,7 +47,17 @@ pip install generatorlabs
 ```python
 import generatorlabs
 
+# Basic initialization
 client = generatorlabs.Client("your_account_sid", "your_auth_token")
+
+# With custom configuration
+config = generatorlabs.Config(
+    timeout=45,           # Request timeout in seconds
+    connect_timeout=10,   # Connection timeout in seconds
+    max_retries=5,        # Maximum retry attempts
+    retry_backoff=2       # Backoff multiplier (2x: 1s, 2s, 4s, 8s, 16s)
+)
+client = generatorlabs.Client("your_account_sid", "your_auth_token", config)
 ```
 
 ### List Hosts
