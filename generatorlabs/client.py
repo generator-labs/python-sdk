@@ -17,6 +17,7 @@ from .config import Config
 from .api.request_handler import RequestHandler
 from .api.rbl import RBL
 from .api.contact import Contact
+from .api.cert import Cert
 
 
 class Client:
@@ -66,6 +67,7 @@ class Client:
         # Lazy-loaded API namespaces
         self._rbl: Optional[RBL] = None
         self._contact: Optional[Contact] = None
+        self._cert: Optional[Cert] = None
 
     @property
     def rbl(self) -> RBL:
@@ -88,3 +90,14 @@ class Client:
         if self._contact is None:
             self._contact = Contact(self._handler)
         return self._contact
+
+    @property
+    def cert(self) -> Cert:
+        """Get the Certificate monitoring API namespace.
+
+        Returns:
+            Cert namespace with endpoints for errors, monitors, and profiles
+        """
+        if self._cert is None:
+            self._cert = Cert(self._handler)
+        return self._cert
