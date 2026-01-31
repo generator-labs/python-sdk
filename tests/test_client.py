@@ -13,6 +13,7 @@ import pytest
 from generatorlabs import Client, Exception
 from generatorlabs.api.rbl import RBL
 from generatorlabs.api.contact import Contact
+from generatorlabs.api.cert import Cert
 
 
 class TestClient:
@@ -48,6 +49,34 @@ class TestClient:
         assert isinstance(client.contact, Contact)
         # Test lazy loading - should return same instance
         assert client.contact is client.contact
+
+    def test_cert_namespace(self) -> None:
+        """Test access to Cert namespace."""
+        client = Client("AC" + "a" * 32, "b" * 64)
+        assert isinstance(client.cert, Cert)
+        # Test lazy loading - should return same instance
+        assert client.cert is client.cert
+
+    def test_cert_errors_endpoint(self) -> None:
+        """Test access to Cert errors endpoint."""
+        client = Client("AC" + "a" * 32, "b" * 64)
+        # Just verify the endpoint is accessible
+        assert hasattr(client.cert, 'errors')
+        assert client.cert.errors is not None
+
+    def test_cert_monitors_endpoint(self) -> None:
+        """Test access to Cert monitors endpoint."""
+        client = Client("AC" + "a" * 32, "b" * 64)
+        # Just verify the endpoint is accessible
+        assert hasattr(client.cert, 'monitors')
+        assert client.cert.monitors is not None
+
+    def test_cert_profiles_endpoint(self) -> None:
+        """Test access to Cert profiles endpoint."""
+        client = Client("AC" + "a" * 32, "b" * 64)
+        # Just verify the endpoint is accessible
+        assert hasattr(client.cert, 'profiles')
+        assert client.cert.profiles is not None
 
     def test_version(self) -> None:
         """Test SDK version."""
