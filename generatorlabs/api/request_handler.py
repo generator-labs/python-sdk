@@ -9,9 +9,14 @@
 
 """HTTP request handler for the Generator Labs API."""
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, TYPE_CHECKING
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from ..exception import Exception
+
+if TYPE_CHECKING:
+    from ..client import Client
 
 
 class RequestHandler:
@@ -29,6 +34,47 @@ class RequestHandler:
         self.auth_token = auth_token
         self.api_url = api_url
         self.auth = (account_sid, auth_token)
+
+        # Initialize session with retry logic and timeouts
+        self.session = self._create_session()
+
+    def _create_session(self) -> requests.Session:
+        """Create a requests session with retry logic and configuration.
+
+        Returns:
+            Configured requests.Session with retry adapter
+        """
+        # Import VERSION here to avoid circular import
+        from ..client import Client
+
+        session = requests.Session()
+
+        # Configure retry strategy with exponential backoff
+        # Retries: 0, 1, 2 (3 total attempts)
+        # Backoff delays: 1s, 2s, 4s
+        retry_strategy = Retry(
+            total=3,  # Maximum number of retries
+            backoff_factor=1,  # Exponential backoff: 1 * (2 ** retry_number)
+            status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to retry
+            allowed_methods=["GET", "POST", "PUT", "DELETE"],  # Methods to retry
+            raise_on_status=False,  # Don't raise on retry exhaustion
+        )
+
+        # Mount adapter with retry strategy
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+
+        # Set default headers
+        session.headers.update({
+            "User-Agent": f"GeneratorLabs-Python/{Client.VERSION}",
+            "Accept": "application/json",
+        })
+
+        # Set authentication
+        session.auth = self.auth
+
+        return session
 
     def _make_request(
         self,
@@ -51,18 +97,22 @@ class RequestHandler:
         """
         url = f"{self.api_url}{path}.json"
 
+        # Timeouts: (connect_timeout, read_timeout)
+        timeout = (5.0, 30.0)
+
         try:
             if method == "GET":
-                response = requests.get(url, params=params, auth=self.auth)
+                response = self.session.get(url, params=params, timeout=timeout)
             elif method == "POST":
-                response = requests.post(url, data=params, auth=self.auth)
+                response = self.session.post(url, data=params, timeout=timeout)
             elif method == "PUT":
-                response = requests.put(url, data=params, auth=self.auth)
+                response = self.session.put(url, data=params, timeout=timeout)
             elif method == "DELETE":
-                response = requests.delete(url, auth=self.auth)
+                response = self.session.delete(url, timeout=timeout)
             else:
                 raise Exception(f"Unsupported HTTP method: {method}")
 
+            # Check HTTP status code
             response.raise_for_status()
 
         except requests.exceptions.RequestException as e:
