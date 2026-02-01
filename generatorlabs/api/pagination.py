@@ -9,7 +9,7 @@
 
 """Pagination support for list endpoints."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 
 class PaginationMixin:
@@ -67,13 +67,13 @@ class PaginationMixin:
         resource_name = self._get_resource_name()
 
         if resource_name in response:
-            return response[resource_name]
+            return cast(List[Dict[str, Any]], response[resource_name])
 
         if 'data' in response:
-            return response['data']
+            return cast(List[Dict[str, Any]], response['data'])
 
         if 'items' in response:
-            return response['items']
+            return cast(List[Dict[str, Any]], response['items'])
 
         return []
 
