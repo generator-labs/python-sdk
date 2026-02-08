@@ -12,6 +12,7 @@
 from .client import Client
 from .config import Config
 from .exception import Exception
+from .webhook import Webhook
 
 __version__ = "2.0.0"
-__all__ = ["Client", "Config", "Exception"]
+__all__ = ["Client", "Config", "Exception", "Webhook"]

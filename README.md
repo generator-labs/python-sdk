@@ -287,6 +287,37 @@ except generatorlabs.Exception as e:
     print(e)
 ```
 
+## Webhook Verification
+
+The SDK includes a helper for verifying incoming webhook signatures. Each webhook is assigned a signing secret (available in the Portal), which is used to compute an HMAC-SHA256 signature sent with every request in the `X-Webhook-Signature` header.
+
+```python
+from generatorlabs import Webhook, Exception
+
+header = request.headers.get('X-Webhook-Signature', '')
+body = request.get_data(as_text=True)
+secret = os.getenv('GENERATOR_LABS_WEBHOOK_SECRET')
+
+try:
+    payload = Webhook.verify(body, header, secret)
+
+    # payload is the decoded event data
+    print(payload['event'])
+
+except Exception as e:
+    # Signature verification failed
+    return jsonify({'error': 'Invalid signature'}), 403
+```
+
+The default timestamp tolerance is 5 minutes. You can customize it (in seconds), or pass `0` to disable:
+
+```python
+payload = Webhook.verify(body, header, secret, 600)  # 10-minute tolerance
+payload = Webhook.verify(body, header, secret, 0)    # disable timestamp check
+```
+
+See `examples/webhook_verification.py` for a complete example.
+
 ## API Documentation
 
 Full API documentation is available at the [Generator Labs Developer Site](https://docs.generatorlabs.com/api/v4/).
