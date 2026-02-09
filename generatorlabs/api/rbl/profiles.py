@@ -11,9 +11,10 @@
 
 from typing import Any, Dict, Optional, Union
 from ..request_handler import RequestHandler
+from ..pagination import PaginationMixin
 
 
-class Profiles:
+class Profiles(PaginationMixin):
     """Manage RBL monitoring profiles."""
 
     def __init__(self, handler: RequestHandler) -> None:
@@ -77,3 +78,7 @@ class Profiles:
             API response
         """
         return self.handler.delete(f"rbl/profiles/{profile_id}")
+
+    def _get_resource_name(self) -> str:
+        """Get the resource name for pagination."""
+        return 'profiles'

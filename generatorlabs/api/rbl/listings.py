@@ -11,9 +11,10 @@
 
 from typing import Any, Dict, Optional
 from ..request_handler import RequestHandler
+from ..pagination import PaginationMixin
 
 
-class Listings:
+class Listings(PaginationMixin):
     """Get current RBL listings."""
 
     def __init__(self, handler: RequestHandler) -> None:
@@ -34,3 +35,7 @@ class Listings:
             API response with listing data
         """
         return self.handler.get("rbl/listings", params or {})
+
+    def _get_resource_name(self) -> str:
+        """Get the resource name for pagination."""
+        return 'listings'

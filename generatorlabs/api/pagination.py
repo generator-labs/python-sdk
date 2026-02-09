@@ -44,8 +44,8 @@ class PaginationMixin:
             all_items.extend(items)
 
             # Check if there are more pages
-            has_more = response.get('has_more', False)
-            if not has_more:
+            total_pages = response.get('total_pages', 1)
+            if page >= total_pages:
                 break
 
             page += 1

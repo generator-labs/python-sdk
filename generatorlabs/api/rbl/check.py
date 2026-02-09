@@ -33,7 +33,7 @@ class Check:
         Returns:
             API response with check ID
         """
-        return self.handler.post("rbl/check", params)
+        return self.handler.post("rbl/check/start", params)
 
     def status(
         self,
@@ -49,4 +49,4 @@ class Check:
         Returns:
             API response with check status
         """
-        return self.handler.get(f"rbl/check/{check_id}", params or {})
+        return self.handler.get(f"rbl/check/status/{check_id}", params or {})

@@ -11,9 +11,10 @@
 
 from typing import Any, Dict, Optional, Union
 from ..request_handler import RequestHandler
+from ..pagination import PaginationMixin
 
 
-class Groups:
+class Groups(PaginationMixin):
     """Manage contact groups."""
 
     def __init__(self, handler: RequestHandler) -> None:
@@ -77,3 +78,7 @@ class Groups:
             API response
         """
         return self.handler.delete(f"contact/groups/{group_id}")
+
+    def _get_resource_name(self) -> str:
+        """Get the resource name for pagination."""
+        return 'groups'

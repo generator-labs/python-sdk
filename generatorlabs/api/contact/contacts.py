@@ -11,9 +11,10 @@
 
 from typing import Any, Dict, Optional, Union
 from ..request_handler import RequestHandler
+from ..pagination import PaginationMixin
 
 
-class Contacts:
+class Contacts(PaginationMixin):
     """Manage notification contacts."""
 
     def __init__(self, handler: RequestHandler) -> None:
@@ -122,3 +123,7 @@ class Contacts:
             API response
         """
         return self.handler.post(f"contact/contacts/{contact_id}/resend")
+
+    def _get_resource_name(self) -> str:
+        """Get the resource name for pagination."""
+        return 'contacts'

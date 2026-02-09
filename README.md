@@ -287,6 +287,37 @@ except generatorlabs.Exception as e:
     print(e)
 ```
 
+## Pagination
+
+List endpoints return paginated results. You can manually pass `page` and `page_size` parameters, or use the `get_all()` helper to automatically fetch every page and return a flat list of all items:
+
+```python
+try:
+    # Get all hosts across all pages (default page_size: 100)
+    all_hosts = client.rbl.hosts.get_all()
+
+    for host in all_hosts:
+        print(f"{host['name']} - {host['host']}")
+
+    # With a custom page size
+    all_hosts = client.rbl.hosts.get_all(page_size=50)
+
+except generatorlabs.Exception as e:
+    print(e)
+```
+
+The `get_all()` method is available on all list endpoints:
+
+- `client.rbl.hosts.get_all()`
+- `client.rbl.profiles.get_all()`
+- `client.rbl.sources.get_all()`
+- `client.rbl.listings.get_all()`
+- `client.contact.contacts.get_all()`
+- `client.contact.groups.get_all()`
+- `client.cert.monitors.get_all()`
+- `client.cert.profiles.get_all()`
+- `client.cert.errors.get_all()`
+
 ## Webhook Verification
 
 The SDK includes a helper for verifying incoming webhook signatures. Each webhook is assigned a signing secret (available in the Portal), which is used to compute an HMAC-SHA256 signature sent with every request in the `X-Webhook-Signature` header.
