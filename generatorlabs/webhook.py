@@ -83,4 +83,5 @@ class Webhook:
             raise Exception("Webhook signature verification failed.")
 
         # Decode and return the payload
-        return json.loads(body)
+        result: Dict[str, Any] = json.loads(body)
+        return result
