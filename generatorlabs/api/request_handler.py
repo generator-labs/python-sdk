@@ -107,6 +107,12 @@ class RequestHandler:
         # Timeouts: (connect_timeout, read_timeout)
         timeout = (self.config.connect_timeout, self.config.timeout)
 
+        # Convert list values to comma-separated strings for form encoding
+        if params:
+            for key, value in params.items():
+                if isinstance(value, list):
+                    params[key] = ",".join(str(v) for v in value)
+
         try:
             if method == "GET":
                 response = self.session.get(url, params=params, timeout=timeout)

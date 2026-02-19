@@ -49,7 +49,7 @@ class Monitors(PaginationMixin):
         """Create a new certificate monitor.
 
         Args:
-            params: Monitor creation parameters (name, host, type, cert_profile, contact_group)
+            params: Monitor creation parameters (hostname, protocol, name, profile, contact_group)
 
         Returns:
             API response with created monitor data

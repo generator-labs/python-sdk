@@ -49,7 +49,7 @@ class Hosts(PaginationMixin):
         """Create a new monitored host.
 
         Args:
-            params: Host creation parameters (name, host, type, rbl_profile, contact_group)
+            params: Host creation parameters (name, host, profile, contact_group)
 
         Returns:
             API response with created host data
