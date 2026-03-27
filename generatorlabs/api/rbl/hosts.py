@@ -12,6 +12,7 @@
 from typing import Any, Dict, Optional, Union
 from ..request_handler import RequestHandler
 from ..pagination import PaginationMixin
+from ...response import Response
 
 
 class Hosts(PaginationMixin):
@@ -28,7 +29,7 @@ class Hosts(PaginationMixin):
     def get(
         self,
         id_or_params: Optional[Union[str, Dict[str, Any]]] = None
-    ) -> Dict[str, Any]:
+    ) -> Response:
         """Get hosts or a single host.
 
         Args:
@@ -45,7 +46,7 @@ class Hosts(PaginationMixin):
             # List hosts
             return self.handler.get("rbl/hosts", id_or_params or {})
 
-    def create(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    def create(self, params: Dict[str, Any]) -> Response:
         """Create a new monitored host.
 
         Args:
@@ -56,7 +57,7 @@ class Hosts(PaginationMixin):
         """
         return self.handler.post("rbl/hosts", params)
 
-    def update(self, host_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    def update(self, host_id: str, params: Dict[str, Any]) -> Response:
         """Update an existing host.
 
         Args:
@@ -68,7 +69,7 @@ class Hosts(PaginationMixin):
         """
         return self.handler.put(f"rbl/hosts/{host_id}", params)
 
-    def delete(self, host_id: str) -> Dict[str, Any]:
+    def delete(self, host_id: str) -> Response:
         """Delete a host.
 
         Args:
@@ -79,7 +80,7 @@ class Hosts(PaginationMixin):
         """
         return self.handler.delete(f"rbl/hosts/{host_id}")
 
-    def pause(self, host_id: str) -> Dict[str, Any]:
+    def pause(self, host_id: str) -> Response:
         """Pause monitoring for a host.
 
         Args:
@@ -90,7 +91,7 @@ class Hosts(PaginationMixin):
         """
         return self.handler.post(f"rbl/hosts/{host_id}/pause")
 
-    def resume(self, host_id: str) -> Dict[str, Any]:
+    def resume(self, host_id: str) -> Response:
         """Resume monitoring for a host.
 
         Args:

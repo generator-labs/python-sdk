@@ -12,6 +12,7 @@
 from typing import Any, Dict, Optional
 from ..request_handler import RequestHandler
 from ..pagination import PaginationMixin
+from ...response import Response
 
 
 class Listings(PaginationMixin):
@@ -25,7 +26,7 @@ class Listings(PaginationMixin):
         """
         self.handler = handler
 
-    def get(self, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def get(self, params: Optional[Dict[str, Any]] = None) -> Response:
         """Get current RBL listings.
 
         Args:

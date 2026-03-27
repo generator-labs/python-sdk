@@ -12,6 +12,7 @@
 from typing import Any, Dict, Optional, Union
 from ..request_handler import RequestHandler
 from ..pagination import PaginationMixin
+from ...response import Response
 
 
 class Profiles(PaginationMixin):
@@ -28,7 +29,7 @@ class Profiles(PaginationMixin):
     def get(
         self,
         id_or_params: Optional[Union[str, Dict[str, Any]]] = None
-    ) -> Dict[str, Any]:
+    ) -> Response:
         """Get profiles or a single profile.
 
         Args:
@@ -45,7 +46,7 @@ class Profiles(PaginationMixin):
             # List profiles
             return self.handler.get("rbl/profiles", id_or_params or {})
 
-    def create(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    def create(self, params: Dict[str, Any]) -> Response:
         """Create a new monitoring profile.
 
         Args:
@@ -56,7 +57,7 @@ class Profiles(PaginationMixin):
         """
         return self.handler.post("rbl/profiles", params)
 
-    def update(self, profile_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    def update(self, profile_id: str, params: Dict[str, Any]) -> Response:
         """Update an existing profile.
 
         Args:
@@ -68,7 +69,7 @@ class Profiles(PaginationMixin):
         """
         return self.handler.put(f"rbl/profiles/{profile_id}", params)
 
-    def delete(self, profile_id: str) -> Dict[str, Any]:
+    def delete(self, profile_id: str) -> Response:
         """Delete a profile.
 
         Args:

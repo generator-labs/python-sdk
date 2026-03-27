@@ -9,7 +9,8 @@
 
 """Pagination support for list endpoints."""
 
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional, Union, cast
+from ..response import Response
 
 
 class PaginationMixin:
@@ -52,7 +53,7 @@ class PaginationMixin:
 
         return all_items
 
-    def _extract_items(self, response: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _extract_items(self, response: Union[Response, Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Extract items from API response.
 
         Override in child class if needed.

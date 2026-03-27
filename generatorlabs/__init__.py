@@ -12,7 +12,8 @@
 from .client import Client
 from .config import Config
 from .exception import Exception
+from .response import RateLimitInfo, Response
 from .webhook import Webhook
 
 __version__ = "2.0.0"
-__all__ = ["Client", "Config", "Exception", "Webhook"]
+__all__ = ["Client", "Config", "Exception", "RateLimitInfo", "Response", "Webhook"]

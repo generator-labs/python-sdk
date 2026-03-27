@@ -12,6 +12,7 @@
 from typing import Any, Dict, Optional, Union
 from ..request_handler import RequestHandler
 from ..pagination import PaginationMixin
+from ...response import Response
 
 
 class Contacts(PaginationMixin):
@@ -28,7 +29,7 @@ class Contacts(PaginationMixin):
     def get(
         self,
         id_or_params: Optional[Union[str, Dict[str, Any]]] = None
-    ) -> Dict[str, Any]:
+    ) -> Response:
         """Get contacts or a single contact.
 
         Args:
@@ -45,7 +46,7 @@ class Contacts(PaginationMixin):
             # List contacts
             return self.handler.get("contact/contacts", id_or_params or {})
 
-    def create(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    def create(self, params: Dict[str, Any]) -> Response:
         """Create a new contact.
 
         Args:
@@ -56,7 +57,7 @@ class Contacts(PaginationMixin):
         """
         return self.handler.post("contact/contacts", params)
 
-    def update(self, contact_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    def update(self, contact_id: str, params: Dict[str, Any]) -> Response:
         """Update an existing contact.
 
         Args:
@@ -68,7 +69,7 @@ class Contacts(PaginationMixin):
         """
         return self.handler.put(f"contact/contacts/{contact_id}", params)
 
-    def delete(self, contact_id: str) -> Dict[str, Any]:
+    def delete(self, contact_id: str) -> Response:
         """Delete a contact.
 
         Args:
@@ -79,7 +80,7 @@ class Contacts(PaginationMixin):
         """
         return self.handler.delete(f"contact/contacts/{contact_id}")
 
-    def pause(self, contact_id: str) -> Dict[str, Any]:
+    def pause(self, contact_id: str) -> Response:
         """Pause a contact.
 
         Args:
@@ -90,7 +91,7 @@ class Contacts(PaginationMixin):
         """
         return self.handler.post(f"contact/contacts/{contact_id}/pause")
 
-    def resume(self, contact_id: str) -> Dict[str, Any]:
+    def resume(self, contact_id: str) -> Response:
         """Resume a contact.
 
         Args:
@@ -101,7 +102,7 @@ class Contacts(PaginationMixin):
         """
         return self.handler.post(f"contact/contacts/{contact_id}/resume")
 
-    def confirm(self, contact_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    def confirm(self, contact_id: str, params: Dict[str, Any]) -> Response:
         """Confirm a contact with an auth code.
 
         Args:
@@ -113,7 +114,7 @@ class Contacts(PaginationMixin):
         """
         return self.handler.post(f"contact/contacts/{contact_id}/confirm", params)
 
-    def resend(self, contact_id: str) -> Dict[str, Any]:
+    def resend(self, contact_id: str) -> Response:
         """Resend confirmation to a contact.
 
         Args:

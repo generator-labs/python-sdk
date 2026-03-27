@@ -12,6 +12,7 @@
 from typing import Any, Dict, Optional, Union
 from ..request_handler import RequestHandler
 from ..pagination import PaginationMixin
+from ...response import Response
 
 
 class Sources(PaginationMixin):
@@ -28,7 +29,7 @@ class Sources(PaginationMixin):
     def get(
         self,
         id_or_params: Optional[Union[str, Dict[str, Any]]] = None
-    ) -> Dict[str, Any]:
+    ) -> Response:
         """Get sources or a single source.
 
         Args:
@@ -45,7 +46,7 @@ class Sources(PaginationMixin):
             # List sources
             return self.handler.get("rbl/sources", id_or_params or {})
 
-    def create(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    def create(self, params: Dict[str, Any]) -> Response:
         """Create a new RBL source.
 
         Args:
@@ -56,7 +57,7 @@ class Sources(PaginationMixin):
         """
         return self.handler.post("rbl/sources", params)
 
-    def update(self, source_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    def update(self, source_id: str, params: Dict[str, Any]) -> Response:
         """Update an existing source.
 
         Args:
@@ -68,7 +69,7 @@ class Sources(PaginationMixin):
         """
         return self.handler.put(f"rbl/sources/{source_id}", params)
 
-    def delete(self, source_id: str) -> Dict[str, Any]:
+    def delete(self, source_id: str) -> Response:
         """Delete a source.
 
         Args:
@@ -79,7 +80,7 @@ class Sources(PaginationMixin):
         """
         return self.handler.delete(f"rbl/sources/{source_id}")
 
-    def pause(self, source_id: str) -> Dict[str, Any]:
+    def pause(self, source_id: str) -> Response:
         """Pause a source.
 
         Args:
@@ -90,7 +91,7 @@ class Sources(PaginationMixin):
         """
         return self.handler.post(f"rbl/sources/{source_id}/pause")
 
-    def resume(self, source_id: str) -> Dict[str, Any]:
+    def resume(self, source_id: str) -> Response:
         """Resume a source.
 
         Args:

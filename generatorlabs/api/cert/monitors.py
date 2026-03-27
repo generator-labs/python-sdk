@@ -12,6 +12,7 @@
 from typing import Any, Dict, Optional, Union
 from ..request_handler import RequestHandler
 from ..pagination import PaginationMixin
+from ...response import Response
 
 
 class Monitors(PaginationMixin):
@@ -28,7 +29,7 @@ class Monitors(PaginationMixin):
     def get(
         self,
         id_or_params: Optional[Union[str, Dict[str, Any]]] = None
-    ) -> Dict[str, Any]:
+    ) -> Response:
         """Get monitors or a single monitor.
 
         Args:
@@ -45,7 +46,7 @@ class Monitors(PaginationMixin):
             # List monitors
             return self.handler.get("cert/monitors", id_or_params or {})
 
-    def create(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    def create(self, params: Dict[str, Any]) -> Response:
         """Create a new certificate monitor.
 
         Args:
@@ -56,7 +57,7 @@ class Monitors(PaginationMixin):
         """
         return self.handler.post("cert/monitors", params)
 
-    def update(self, monitor_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    def update(self, monitor_id: str, params: Dict[str, Any]) -> Response:
         """Update an existing monitor.
 
         Args:
@@ -68,7 +69,7 @@ class Monitors(PaginationMixin):
         """
         return self.handler.put(f"cert/monitors/{monitor_id}", params)
 
-    def delete(self, monitor_id: str) -> Dict[str, Any]:
+    def delete(self, monitor_id: str) -> Response:
         """Delete a monitor.
 
         Args:
@@ -79,7 +80,7 @@ class Monitors(PaginationMixin):
         """
         return self.handler.delete(f"cert/monitors/{monitor_id}")
 
-    def pause(self, monitor_id: str) -> Dict[str, Any]:
+    def pause(self, monitor_id: str) -> Response:
         """Pause monitoring for a certificate.
 
         Args:
@@ -90,7 +91,7 @@ class Monitors(PaginationMixin):
         """
         return self.handler.post(f"cert/monitors/{monitor_id}/pause")
 
-    def resume(self, monitor_id: str) -> Dict[str, Any]:
+    def resume(self, monitor_id: str) -> Response:
         """Resume monitoring for a certificate.
 
         Args:

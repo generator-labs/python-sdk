@@ -12,6 +12,7 @@
 from typing import Any, Dict, Optional, Union
 from ..request_handler import RequestHandler
 from ..pagination import PaginationMixin
+from ...response import Response
 
 
 class Groups(PaginationMixin):
@@ -28,7 +29,7 @@ class Groups(PaginationMixin):
     def get(
         self,
         id_or_params: Optional[Union[str, Dict[str, Any]]] = None
-    ) -> Dict[str, Any]:
+    ) -> Response:
         """Get groups or a single group.
 
         Args:
@@ -45,7 +46,7 @@ class Groups(PaginationMixin):
             # List groups
             return self.handler.get("contact/groups", id_or_params or {})
 
-    def create(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    def create(self, params: Dict[str, Any]) -> Response:
         """Create a new contact group.
 
         Args:
@@ -56,7 +57,7 @@ class Groups(PaginationMixin):
         """
         return self.handler.post("contact/groups", params)
 
-    def update(self, group_id: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    def update(self, group_id: str, params: Dict[str, Any]) -> Response:
         """Update an existing group.
 
         Args:
@@ -68,7 +69,7 @@ class Groups(PaginationMixin):
         """
         return self.handler.put(f"contact/groups/{group_id}", params)
 
-    def delete(self, group_id: str) -> Dict[str, Any]:
+    def delete(self, group_id: str) -> Response:
         """Delete a group.
 
         Args:

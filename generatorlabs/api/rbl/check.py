@@ -11,6 +11,7 @@
 
 from typing import Any, Dict, Optional
 from ..request_handler import RequestHandler
+from ...response import Response
 
 
 class Check:
@@ -24,7 +25,7 @@ class Check:
         """
         self.handler = handler
 
-    def start(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    def start(self, params: Dict[str, Any]) -> Response:
         """Start a manual RBL check.
 
         Args:
@@ -39,7 +40,7 @@ class Check:
         self,
         check_id: str,
         params: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    ) -> Response:
         """Get the status of a manual check.
 
         Args:

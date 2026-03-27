@@ -15,6 +15,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from ..exception import Exception
 from ..config import Config
+from ..response import Response as ApiResponse, RateLimitInfo
 
 if TYPE_CHECKING:
     from ..client import Client
@@ -65,6 +66,7 @@ class RequestHandler:
             status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to retry
             allowed_methods=["GET", "POST", "PUT", "DELETE"],  # Methods to retry
             raise_on_status=False,  # Don't raise on retry exhaustion
+            respect_retry_after_header=True,  # Use Retry-After header from rate limit responses
         )
 
         # Mount adapter with retry strategy
@@ -88,7 +90,7 @@ class RequestHandler:
         method: str,
         path: str,
         params: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+    ) -> ApiResponse:
         """Make an HTTP request to the API.
 
         Args:
@@ -97,7 +99,7 @@ class RequestHandler:
             params: Request parameters
 
         Returns:
-            JSON response as a dictionary
+            API response wrapper with data and rate limit info
 
         Raises:
             Exception: If the request fails or response is invalid
@@ -141,20 +143,29 @@ class RequestHandler:
             error_msg = json_data.get("error", {}).get("message", "Unknown error")
             raise Exception(f"API error: {error_msg}")
 
-        return json_data
+        # Parse rate limit headers
+        rate_limit_info = None
+        if 'RateLimit-Limit' in response.headers:
+            rate_limit_info = RateLimitInfo(
+                limit=response.headers['RateLimit-Limit'],
+                remaining=int(response.headers.get('RateLimit-Remaining', '0')),
+                reset=int(response.headers.get('RateLimit-Reset', '0'))
+            )
 
-    def get(self, path: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        return ApiResponse(json_data, rate_limit_info)
+
+    def get(self, path: str, params: Optional[Dict[str, Any]] = None) -> ApiResponse:
         """Make a GET request."""
         return self._make_request("GET", path, params)
 
-    def post(self, path: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def post(self, path: str, params: Optional[Dict[str, Any]] = None) -> ApiResponse:
         """Make a POST request."""
         return self._make_request("POST", path, params)
 
-    def put(self, path: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def put(self, path: str, params: Optional[Dict[str, Any]] = None) -> ApiResponse:
         """Make a PUT request."""
         return self._make_request("PUT", path, params)
 
-    def delete(self, path: str) -> Dict[str, Any]:
+    def delete(self, path: str) -> ApiResponse:
         """Make a DELETE request."""
         return self._make_request("DELETE", path)
