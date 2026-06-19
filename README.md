@@ -547,6 +547,11 @@ pytest --cov=generatorlabs --cov-report=term-missing
 
 ## Release History
 
+### v2.0.1 (2026-06-19)
+* Error detection now reads the API `status_code` and `status_message`; any `status_code` (or HTTP status) of 400 or greater raises `Exception` with the API message
+* `Exception` now carries a `status_code` attribute
+* The response body is parsed before the status is evaluated, preserving the API error message
+
 ### v2.0.0 (2026-01-31)
 * Complete rewrite for Generator Labs API v4.0
 * RESTful endpoint design with proper HTTP verbs
