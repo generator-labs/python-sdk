@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1]
+
+### Changed
+- Error detection now reads the API `status_code` and `status_message` fields and treats any
+  `status_code` (or HTTP status) of 400 or greater as an error, raising `Exception` with the
+  API's `status_message`. This aligns the SDK with the v4.0 API returning real HTTP status codes
+  (400, 403, 404, 409, 422, 429, 500) instead of always returning 200.
+- `Exception` now carries a `status_code` attribute so callers can branch on the specific code.
+
+### Fixed
+- The response body is now parsed before the status is evaluated, so the API's error message is
+  preserved instead of being lost behind a generic HTTP error.
+
 ## [2.0.0]
 
 ### Added

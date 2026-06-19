@@ -14,4 +14,7 @@ from typing import Any
 
 class Exception(BaseException):
     """Base exception for all Generator Labs SDK errors."""
-    pass
+
+    def __init__(self, message: str, status_code: Any = None) -> None:
+        super().__init__(message)
+        self.status_code = status_code

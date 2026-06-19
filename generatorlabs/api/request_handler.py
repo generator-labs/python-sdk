@@ -127,21 +127,28 @@ class RequestHandler:
             else:
                 raise Exception(f"Unsupported HTTP method: {method}")
 
-            # Check HTTP status code
-            response.raise_for_status()
-
         except requests.exceptions.RequestException as e:
             raise Exception(f"API request failed: {str(e)}")
 
+        # Parse the JSON body first so the API's status_message survives, then determine
+        # success vs failure from status_code (which mirrors the HTTP status code).
         try:
             json_data: Dict[str, Any] = response.json()
         except ValueError:
+            if response.status_code >= 400:
+                raise Exception(f"HTTP {response.status_code} error", response.status_code)
             raise Exception("Failed to parse JSON response")
 
-        # Check v4.0 API response format
-        if isinstance(json_data, dict) and json_data.get("success") is False:
-            error_msg = json_data.get("error", {}).get("message", "Unknown error")
-            raise Exception(f"API error: {error_msg}")
+        code = (
+            json_data["status_code"]
+            if isinstance(json_data, dict) and "status_code" in json_data
+            else response.status_code
+        )
+        if code >= 400:
+            message = (
+                json_data.get("status_message") if isinstance(json_data, dict) else None
+            ) or f"HTTP {response.status_code} error"
+            raise Exception(f"API error: {message}", code)
 
         # Parse rate limit headers
         rate_limit_info = None
