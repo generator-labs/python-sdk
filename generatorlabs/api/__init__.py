@@ -9,8 +9,9 @@
 
 """Generator Labs API endpoints."""
 
+from .account import Account
 from .rbl import RBL
 from .contact import Contact
 from .request_handler import RequestHandler
 
-__all__ = ["RBL", "Contact", "RequestHandler"]
+__all__ = ["Account", "RBL", "Contact", "RequestHandler"]

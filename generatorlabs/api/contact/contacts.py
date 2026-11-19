@@ -28,102 +28,111 @@ class Contacts(PaginationMixin):
 
     def get(
         self,
-        id_or_params: Optional[Union[str, Dict[str, Any]]] = None
+        id_or_params: Optional[Union[str, Dict[str, Any]]] = None,
+        **options: Any
     ) -> Response:
         """Get contacts or a single contact.
 
         Args:
             id_or_params: Either a contact ID string to get a single contact,
                          or a dict of parameters to list contacts
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response with contact data
         """
         if isinstance(id_or_params, str):
             # Get single contact
-            return self.handler.get(f"contact/contacts/{id_or_params}")
+            return self.handler.get(f"contact/contacts/{id_or_params}", **options)
         else:
             # List contacts
-            return self.handler.get("contact/contacts", id_or_params or {})
+            return self.handler.get("contact/contacts", id_or_params or {}, **options)
 
-    def create(self, params: Dict[str, Any]) -> Response:
+    def create(self, params: Dict[str, Any], **options: Any) -> Response:
         """Create a new contact.
 
         Args:
             params: Contact creation parameters (email, type)
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response with created contact data
         """
-        return self.handler.post("contact/contacts", params)
+        return self.handler.post("contact/contacts", params, idempotent=True, **options)
 
-    def update(self, contact_id: str, params: Dict[str, Any]) -> Response:
+    def update(self, contact_id: str, params: Dict[str, Any], **options: Any) -> Response:
         """Update an existing contact.
 
         Args:
             contact_id: The contact ID to update
             params: Contact parameters to update
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response
         """
-        return self.handler.put(f"contact/contacts/{contact_id}", params)
+        return self.handler.put(f"contact/contacts/{contact_id}", params, **options)
 
-    def delete(self, contact_id: str) -> Response:
+    def delete(self, contact_id: str, **options: Any) -> Response:
         """Delete a contact.
 
         Args:
             contact_id: The contact ID to delete
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response
         """
-        return self.handler.delete(f"contact/contacts/{contact_id}")
+        return self.handler.delete(f"contact/contacts/{contact_id}", **options)
 
-    def pause(self, contact_id: str) -> Response:
+    def pause(self, contact_id: str, **options: Any) -> Response:
         """Pause a contact.
 
         Args:
             contact_id: The contact ID to pause
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response
         """
-        return self.handler.post(f"contact/contacts/{contact_id}/pause")
+        return self.handler.post(f"contact/contacts/{contact_id}/pause", **options)
 
-    def resume(self, contact_id: str) -> Response:
+    def resume(self, contact_id: str, **options: Any) -> Response:
         """Resume a contact.
 
         Args:
             contact_id: The contact ID to resume
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response
         """
-        return self.handler.post(f"contact/contacts/{contact_id}/resume")
+        return self.handler.post(f"contact/contacts/{contact_id}/resume", **options)
 
-    def confirm(self, contact_id: str, params: Dict[str, Any]) -> Response:
+    def confirm(self, contact_id: str, params: Dict[str, Any], **options: Any) -> Response:
         """Confirm a contact with an auth code.
 
         Args:
             contact_id: The contact ID to confirm
             params: Confirmation parameters (authcode)
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response
         """
-        return self.handler.post(f"contact/contacts/{contact_id}/confirm", params)
+        return self.handler.post(f"contact/contacts/{contact_id}/confirm", params, idempotent=True, **options)
 
-    def resend(self, contact_id: str) -> Response:
+    def resend(self, contact_id: str, **options: Any) -> Response:
         """Resend confirmation to a contact.
 
         Args:
             contact_id: The contact ID
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response
         """
-        return self.handler.post(f"contact/contacts/{contact_id}/resend")
+        return self.handler.post(f"contact/contacts/{contact_id}/resend", idempotent=True, **options)
 
     def _get_resource_name(self) -> str:
         """Get the resource name for pagination."""

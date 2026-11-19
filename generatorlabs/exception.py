@@ -9,12 +9,19 @@
 
 """Exception classes for the Generator Labs SDK."""
 
-from typing import Any
+import builtins
+from typing import Any, Optional
 
 
-class Exception(BaseException):
+class Exception(builtins.Exception):
     """Base exception for all Generator Labs SDK errors."""
 
-    def __init__(self, message: str, status_code: Any = None) -> None:
+    def __init__(
+        self,
+        message: str,
+        status_code: Any = None,
+        request_id: Optional[str] = None
+    ) -> None:
         super().__init__(message)
         self.status_code = status_code
+        self.request_id = request_id

@@ -28,57 +28,62 @@ class Groups(PaginationMixin):
 
     def get(
         self,
-        id_or_params: Optional[Union[str, Dict[str, Any]]] = None
+        id_or_params: Optional[Union[str, Dict[str, Any]]] = None,
+        **options: Any
     ) -> Response:
         """Get groups or a single group.
 
         Args:
             id_or_params: Either a group ID string to get a single group,
                          or a dict of parameters to list groups
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response with group data
         """
         if isinstance(id_or_params, str):
             # Get single group
-            return self.handler.get(f"contact/groups/{id_or_params}")
+            return self.handler.get(f"contact/groups/{id_or_params}", **options)
         else:
             # List groups
-            return self.handler.get("contact/groups", id_or_params or {})
+            return self.handler.get("contact/groups", id_or_params or {}, **options)
 
-    def create(self, params: Dict[str, Any]) -> Response:
+    def create(self, params: Dict[str, Any], **options: Any) -> Response:
         """Create a new contact group.
 
         Args:
             params: Group creation parameters (name, contacts)
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response with created group data
         """
-        return self.handler.post("contact/groups", params)
+        return self.handler.post("contact/groups", params, idempotent=True, **options)
 
-    def update(self, group_id: str, params: Dict[str, Any]) -> Response:
+    def update(self, group_id: str, params: Dict[str, Any], **options: Any) -> Response:
         """Update an existing group.
 
         Args:
             group_id: The group ID to update
             params: Group parameters to update
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response
         """
-        return self.handler.put(f"contact/groups/{group_id}", params)
+        return self.handler.put(f"contact/groups/{group_id}", params, **options)
 
-    def delete(self, group_id: str) -> Response:
+    def delete(self, group_id: str, **options: Any) -> Response:
         """Delete a group.
 
         Args:
             group_id: The group ID to delete
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response
         """
-        return self.handler.delete(f"contact/groups/{group_id}")
+        return self.handler.delete(f"contact/groups/{group_id}", **options)
 
     def _get_resource_name(self) -> str:
         """Get the resource name for pagination."""

@@ -15,6 +15,7 @@ from typing import Optional
 from .exception import Exception
 from .config import Config
 from .api.request_handler import RequestHandler
+from .api.account import Account
 from .api.rbl import RBL
 from .api.contact import Contact
 from .api.cert import Cert
@@ -23,7 +24,7 @@ from .api.cert import Cert
 class Client:
     """Generator Labs API client."""
 
-    VERSION = "2.0.0"
+    VERSION = "2.1.0"
 
     def __init__(
         self,
@@ -65,9 +66,21 @@ class Client:
         )
 
         # Lazy-loaded API namespaces
+        self._account: Optional[Account] = None
         self._rbl: Optional[RBL] = None
         self._contact: Optional[Contact] = None
         self._cert: Optional[Cert] = None
+
+    @property
+    def account(self) -> Account:
+        """Get the Account API namespace.
+
+        Returns:
+            Account namespace with the account, its balance, usage and scheduled checks
+        """
+        if self._account is None:
+            self._account = Account(self._handler)
+        return self._account
 
     @property
     def rbl(self) -> RBL:

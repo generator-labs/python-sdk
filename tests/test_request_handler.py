@@ -30,7 +30,7 @@ class TestArrayParameterConversion:
         handler = self._make_handler()
         captured_data: dict = {}
 
-        def mock_post(url: str, data: dict = None, timeout: tuple = None):  # type: ignore[assignment]
+        def mock_post(url: str, data: dict = None, headers: dict = None, timeout: tuple = None):  # type: ignore[assignment]
             captured_data.update(data or {})
             response = MagicMock()
             response.json.return_value = {"status_code": 200, "status_message": "OK"}
@@ -58,7 +58,7 @@ class TestArrayParameterConversion:
         handler = self._make_handler()
         captured_data: dict = {}
 
-        def mock_put(url: str, data: dict = None, timeout: tuple = None):  # type: ignore[assignment]
+        def mock_put(url: str, data: dict = None, headers: dict = None, timeout: tuple = None):  # type: ignore[assignment]
             captured_data.update(data or {})
             response = MagicMock()
             response.json.return_value = {"status_code": 200, "status_message": "OK"}
@@ -83,7 +83,7 @@ class TestArrayParameterConversion:
         handler = self._make_handler()
         captured_data: dict = {}
 
-        def mock_post(url: str, data: dict = None, timeout: tuple = None):  # type: ignore[assignment]
+        def mock_post(url: str, data: dict = None, headers: dict = None, timeout: tuple = None):  # type: ignore[assignment]
             captured_data.update(data or {})
             response = MagicMock()
             response.json.return_value = {"status_code": 200, "status_message": "OK"}

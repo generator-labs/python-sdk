@@ -37,6 +37,7 @@ dmypy.json
 venv/
 env/
 ENV/
+.venv
 
 # Other
 .svn/

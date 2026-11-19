@@ -7,7 +7,7 @@
 # file that was distributed with this source code.
 #
 
-"""Response wrapper with rate limit information."""
+"""Response wrapper with rate limit information and response metadata."""
 
 from typing import Any, Dict, Iterator, Optional
 
@@ -29,11 +29,31 @@ class Response:
 
     Supports bracket notation (response['key']) for backward compatibility
     with raw dict returns, while also exposing rate_limit_info.
+
+    Attributes:
+        rate_limit_info: The rate limit headers of the response
+        request_id: The X-Request-Id of the response; quote it when contacting support
+        etag: The ETag of a GET response, to send back as if_none_match
+        replayed: True when the API answered with the result of an earlier request
+                  that carried the same Idempotency-Key
+        not_modified: True for a 304 Not Modified answer to if_none_match (no data)
     """
 
-    def __init__(self, data: Dict[str, Any], rate_limit_info: Optional[RateLimitInfo] = None) -> None:
+    def __init__(
+        self,
+        data: Dict[str, Any],
+        rate_limit_info: Optional[RateLimitInfo] = None,
+        request_id: Optional[str] = None,
+        etag: Optional[str] = None,
+        replayed: bool = False,
+        not_modified: bool = False
+    ) -> None:
         self._data = data
         self.rate_limit_info = rate_limit_info
+        self.request_id = request_id
+        self.etag = etag
+        self.replayed = replayed
+        self.not_modified = not_modified
 
     def __getitem__(self, key: str) -> Any:
         return self._data[key]

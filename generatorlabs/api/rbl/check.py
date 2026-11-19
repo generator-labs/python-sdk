@@ -25,29 +25,32 @@ class Check:
         """
         self.handler = handler
 
-    def start(self, params: Dict[str, Any]) -> Response:
+    def start(self, params: Dict[str, Any], **options: Any) -> Response:
         """Start a manual RBL check.
 
         Args:
             params: Check parameters (host, callback, details)
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response with check ID
         """
-        return self.handler.post("rbl/check/start", params)
+        return self.handler.post("rbl/check/start", params, idempotent=True, **options)
 
     def status(
         self,
         check_id: str,
-        params: Optional[Dict[str, Any]] = None
+        params: Optional[Dict[str, Any]] = None,
+        **options: Any
     ) -> Response:
         """Get the status of a manual check.
 
         Args:
             check_id: The check ID
             params: Optional parameters (details)
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response with check status
         """
-        return self.handler.get(f"rbl/check/status/{check_id}", params or {})
+        return self.handler.get(f"rbl/check/status/{check_id}", params or {}, **options)

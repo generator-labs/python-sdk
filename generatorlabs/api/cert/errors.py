@@ -26,16 +26,28 @@ class Errors(PaginationMixin):
         """
         self.handler = handler
 
-    def get(self, params: Optional[Dict[str, Any]] = None) -> Response:
+    def get(self, params: Optional[Dict[str, Any]] = None, **options: Any) -> Response:
         """Get current certificate errors.
 
         Args:
             params: Optional query parameters (page, page_size, search, sort)
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response with error data
         """
-        return self.handler.get("cert/errors", params or {})
+        return self.handler.get("cert/errors", params or {}, **options)
+
+    def count(self, **options: Any) -> int:
+        """Get the number of current certificate warnings and errors.
+
+        Args:
+            **options: Request options (request_id)
+
+        Returns:
+            The number of certificate warnings and errors
+        """
+        return int(self.handler.get_plain("cert/errors/count", **options))
 
     def _get_resource_name(self) -> str:
         """Get the resource name for pagination."""

@@ -26,16 +26,17 @@ class Listings(PaginationMixin):
         """
         self.handler = handler
 
-    def get(self, params: Optional[Dict[str, Any]] = None) -> Response:
+    def get(self, params: Optional[Dict[str, Any]] = None, **options: Any) -> Response:
         """Get current RBL listings.
 
         Args:
             params: Optional query parameters (page, page_size, search, sort)
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response with listing data
         """
-        return self.handler.get("rbl/listings", params or {})
+        return self.handler.get("rbl/listings", params or {}, **options)
 
     def _get_resource_name(self) -> str:
         """Get the resource name for pagination."""

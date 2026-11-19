@@ -9,6 +9,8 @@
 
 """Tests for the Generator Labs Client."""
 
+import builtins
+
 import pytest
 from generatorlabs import Client, Exception
 from generatorlabs.api.rbl import RBL
@@ -35,6 +37,15 @@ class TestClient:
         """Test client initialization with invalid auth token."""
         with pytest.raises(Exception, match="Invalid auth token format"):
             Client("AC" + "a" * 32, "invalid")
+
+    def test_exception_is_a_standard_exception(self) -> None:
+        """Test that an ordinary except clause catches SDK errors."""
+        assert issubclass(Exception, builtins.Exception)
+
+        try:
+            Client("invalid", "b" * 64)
+        except builtins.Exception as e:
+            assert isinstance(e, Exception)
 
     def test_rbl_namespace(self) -> None:
         """Test access to RBL namespace."""
@@ -80,4 +91,4 @@ class TestClient:
 
     def test_version(self) -> None:
         """Test SDK version."""
-        assert Client.VERSION == "2.0.0"
+        assert Client.VERSION == "2.1.0"

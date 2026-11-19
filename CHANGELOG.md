@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0]
+
+### Added
+- `client.account`: `get`, `balance`, `usage`, `pause_checks` and `resume_checks`.
+- `client.cert.findings`: `get`, `get_all`, `dismiss` and `restore`.
+- `client.cert.monitors.check(monitor_id)` queues a check now, and `client.cert.errors.count()`
+  returns the number of current certificate errors.
+- Request options as keyword arguments on every method: `idempotency_key`, `request_id`,
+  `if_none_match` and `fields`.
+- An `Idempotency-Key` is sent automatically on requests that create something or start a check
+  (creates, contact resend and confirm, certificate monitor delete, RBL check start, certificate
+  check now). It is generated once per call and reused on every retry, so a retried request is not
+  applied twice. A key you pass yourself is used instead.
+- `Response` exposes `request_id`, `etag`, `replayed` and `not_modified`, and `Exception` carries
+  the `request_id`. A 304 answer to `if_none_match` is a normal response with `not_modified` set.
+
+### Changed
+- Python 3.11 or newer is required. Python 3.8, 3.9 and 3.10 have reached end of life.
+- A `Retry-After` longer than 60 seconds is not waited out: the 429 is raised as the error.
+- `generatorlabs.Exception` now extends the built-in `Exception`. It extended `BaseException`, so
+  an `except Exception:` block did not catch SDK errors.
+
+### Fixed
+- The `User-Agent` header reported version 2.0.0.
+
 ## [2.0.1]
 
 ### Changed

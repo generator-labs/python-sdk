@@ -28,57 +28,62 @@ class Profiles(PaginationMixin):
 
     def get(
         self,
-        id_or_params: Optional[Union[str, Dict[str, Any]]] = None
+        id_or_params: Optional[Union[str, Dict[str, Any]]] = None,
+        **options: Any
     ) -> Response:
         """Get profiles or a single profile.
 
         Args:
             id_or_params: Either a profile ID string to get a single profile,
                          or a dict of parameters to list profiles
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response with profile data
         """
         if isinstance(id_or_params, str):
             # Get single profile
-            return self.handler.get(f"cert/profiles/{id_or_params}")
+            return self.handler.get(f"cert/profiles/{id_or_params}", **options)
         else:
             # List profiles
-            return self.handler.get("cert/profiles", id_or_params or {})
+            return self.handler.get("cert/profiles", id_or_params or {}, **options)
 
-    def create(self, params: Dict[str, Any]) -> Response:
+    def create(self, params: Dict[str, Any], **options: Any) -> Response:
         """Create a new certificate monitoring profile.
 
         Args:
             params: Profile creation parameters (name, check_frequency, expiry_threshold, etc.)
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response with created profile data
         """
-        return self.handler.post("cert/profiles", params)
+        return self.handler.post("cert/profiles", params, idempotent=True, **options)
 
-    def update(self, profile_id: str, params: Dict[str, Any]) -> Response:
+    def update(self, profile_id: str, params: Dict[str, Any], **options: Any) -> Response:
         """Update an existing profile.
 
         Args:
             profile_id: The profile ID to update
             params: Profile parameters to update
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response
         """
-        return self.handler.put(f"cert/profiles/{profile_id}", params)
+        return self.handler.put(f"cert/profiles/{profile_id}", params, **options)
 
-    def delete(self, profile_id: str) -> Response:
+    def delete(self, profile_id: str, **options: Any) -> Response:
         """Delete a profile.
 
         Args:
             profile_id: The profile ID to delete
+            **options: Request options (idempotency_key, request_id, if_none_match, fields)
 
         Returns:
             API response
         """
-        return self.handler.delete(f"cert/profiles/{profile_id}")
+        return self.handler.delete(f"cert/profiles/{profile_id}", **options)
 
     def _get_resource_name(self) -> str:
         """Get the resource name for pagination."""
